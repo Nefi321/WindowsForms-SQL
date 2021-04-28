@@ -1,0 +1,79 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+
+namespace PrNefiju
+{
+    public partial class Vpis : Form
+    {
+       
+        public Vpis()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            if (txtUser.Text == "" && txtPass.Text == "")
+            {
+                MessageBox.Show(" Prosimo vnesite uporabniško ime in geslo ");
+            }
+            else
+            {
+                //Inicializacija povezave
+                SqlConnection cnn = new SqlConnection(@"Server=DESKTOP-KIV3UPB;Database=PrNefiju;Trusted_Connection=True");
+
+                cnn.Open();//odpiranje povezave
+
+                string ime = txtUser.Text;
+                string pass = txtPass.Text;
+
+                SqlCommand command;
+                //SqlDataReader dataReader;
+                string sql, Output = "";
+
+                sql = "select ImeUporabnika,GesloUporabnika from Uporabnik where ImeUporabnika='" + txtUser.Text + "'and GesloUporabnika='" + txtPass.Text + "'";
+
+                command = new SqlCommand(sql, cnn);
+
+                SqlDataAdapter da = new SqlDataAdapter(command);
+
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    MessageBox.Show("Login sucess Welcome to Homepage");
+                }
+                else
+                {
+                    MessageBox.Show("Invalid Login please check username and password");
+                }
+               /* dataReader = command.ExecuteReader();
+
+                while(dataReader.Read())
+                {
+                    //Output = Output + dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + "\n";
+         
+
+                }*/
+                //MessageBox.Show(Output);
+                //dataReader.Close();
+                command.Dispose();
+                cnn.Close();//zapiranje povezave
+            }
+        }
+    }
+}
